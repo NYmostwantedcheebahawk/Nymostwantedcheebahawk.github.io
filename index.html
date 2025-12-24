@@ -2,13 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Effect</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Merry Christmas, Love! 🎄</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * { pointer-events: none; }
+        body { margin: 0; background: linear-gradient(180deg, #000428 0%, #004e92 50%, #dc143c 100%);
+               font-family: 'Georgia', serif; color: white; text-align: center; overflow: hidden; height: 100vh; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        .clickable { pointer-events: all !important; }
+        .scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 2; }
+        .scene.active { opacity: 1; }
+        h1 { font-size: 4em; text-shadow: 0 0 20px #fff, 0 0 40px red; margin: 0; }
+        .subtitle { font-size: 1.5em; margin: 20px 0; }
+        .gift-box { display: inline-block; width: 250px; height: 250px; margin: 40px auto;
+                    background: linear-gradient(45deg, gold, #ff4500); border-radius: 25px;
+                    position: relative; box-shadow: 0 20px 40px rgba(255,215,0,0.6);
+                    transform: scale(0); z-index: 10; }
+        .gift-box.clickable { cursor: pointer; }
+        .gift-box.clickable:hover { transform: scale(1.05) !important; }
+        .gift-emoji { font-size: 6em; line-height: 250px; }
+        .reveal-text { max-width: 600px; margin: 40px auto; font-size: 1.4em; line-height: 1.7;
+                       background: rgba(0,0,0,0.7); padding: 30px; border-radius: 20px;
+                       backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .surprise-text { font-size: 2em; color: #ffd700; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        #tree { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+                font-size: 5em; opacity: 0.8; animation: sway 4s ease-in-out infinite; z-index: 0; }
+        @keyframes sway { 0%, 100% { transform: translateX(-50%) rotate(-2deg); } 50% { transform: translateX(-50%) rotate(2deg); } }
+    </style>
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
-    <div id="creativityText">This is creativity</div>
-    <script src="script.js"></script>
+    <canvas id="snow"></canvas>
+    <canvas id="lights"></canvas>
+
+    <!-- Scene 1: First gift only -->
+    <div class="scene active" id="scene1">
+        <h1>Merry Christmas, My Love! 🎄✨</h1>
+        <p class="subtitle">Click the gift to unwrap your surprise...</p>
+        <div class="gift-box clickable" id="gift1">
+            <div class="gift-emoji">🎁</div>
+        </div>
+        <div id="tree">🎄</div>
+    </div>
+
+    <!-- Scene 2: DataCamp + Second Gift -->
+    <div class="scene" id="scene2">
+        <div class="reveal-text">
+            <h2>🎓 DataCamp Premium - 1 Year!</h2>
+            <p>Fili got you a full year of 600+ courses in Python, data science, SQL, and more!</p>
+            <p style="font-size: 1.3em; color: #ffd700; margin-top: 20px;">Fili will give you the login 💕</p>
+        </div>
+        <p class="subtitle" style="margin-top: -20px;">But wait... there's another gift! 👇</p>
+        <div class="gift-box clickable" id="gift2">
+            <div class="gift-emoji">🎁</div>
+        </div>
+        <div id="tree">🎄</div>
+    </div>
+
+    <!-- Scene 3: Final Perplexity reveal (UPDATED) -->
+    <div class="scene" id="scene3">
+        <div class="reveal-text">
+            <h2 class="surprise-text">🤖 Perplexity Pro - 1 Year for YOU + NATA!</h2>
+            <p>Fili got you AND your sister Nata a full year of unlimited AI power! Advanced research, file analysis, and the best AI models!</p>
+            <p style="font-size: 1.2em; margin-top: 20px;">Fili will give you the redeem code! 🎉</p>
+        </div>
+        <div id="tree">🎄</div>
+    </div>
+
+    <script>
+        // Snow animation
+        const snowCanvas = document.getElementById('snow');
+        snowCanvas.width = window.innerWidth; snowCanvas.height = window.innerHeight;
+        const ctx = snowCanvas.getContext('2d');
+        let snowflakes = [];
+        for (let i = 0; i < 150; i++) {
+            snowflakes.push({ x: Math.random() * snowCanvas.width, y: Math.random() * snowCanvas.height - snowCanvas.height,
+                             r: Math.random() * 4 + 1, speed: Math.random() * 1.5 + 0.5, sway: Math.random() * 0.02 });
+        }
+        function animateSnow() {
+            ctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+            snowflakes.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x + Math.sin(Date.now() * 0.001 + s.x) * 20, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${s.r/5})`; ctx.fill();
+                s.y += s.speed; s.x += Math.sin(s.y * s.sway) * 2;
+                if (s.y > snowCanvas.height) s.y = -10;
+            });
+            requestAnimationFrame(animateSnow);
+        }
+
+        // Lights animation
+        const lightsCanvas = document.getElementById('lights');
+        lightsCanvas.width = window.innerWidth; lightsCanvas.height = 100;
+        lightsCanvas.style.top = '0';
+        const ctx2 = lightsCanvas.getContext('2d');
+        function animateLights() {
+            ctx2.clearRect(0, 0, lightsCanvas.width, lightsCanvas.height);
+            for (let i = 0; i < 50; i++) {
+                const x = (i * 30) % lightsCanvas.width;
+                const alpha = Math.sin(Date.now() * 0.02 + i) * 0.5 + 0.5;
+                ctx2.beginPath(); ctx2.arc(x, 50, 8, 0, Math.PI * 2);
+                ctx2.fillStyle = `rgba(${255-i*5},${100+i*3},${i*5}, ${alpha})`; ctx2.fill();
+            }
+            requestAnimationFrame(animateLights);
+        }
+
+        // Initialize
+        window.addEventListener('load', function() {
+            // Animate first gift
+            gsap.timeline({delay: 1})
+                .to("#gift1", {scale: 1, rotationY: 720, duration: 2, ease: "back.out(1.7)"});
+
+            // Gift 1 click → DataCamp + Gift 2
+            document.getElementById('gift1').onclick = function() {
+                console.log('Gift 1 clicked!');
+                gsap.to("#scene1", {opacity: 0, duration: 1});
+                gsap.to("#scene2", {opacity: 1, duration: 1.5});
+
+                // Animate second gift after scene loads
+                setTimeout(() => {
+                    gsap.fromTo("#gift2",
+                        {scale: 0, rotationY: 0},
+                        {scale: 1, rotationY: 720, duration: 2, ease: "back.out(1.7)"}
+                    );
+                }, 500);
+            };
+
+            // Gift 2 click → Final reveal
+            document.getElementById('gift2').onclick = function() {
+                console.log('Gift 2 clicked!');
+                gsap.to("#scene2", {opacity: 0, duration: 1});
+                gsap.to("#scene3", {opacity: 1, duration: 2});
+            };
+
+            animateSnow();
+            animateLights();
+        });
+    </script>
 </body>
 </html>
